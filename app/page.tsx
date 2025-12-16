@@ -1,39 +1,51 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { tabsLabel } from "@/components/data";
-import { Button } from "@/components/ui/button"
+import { CashToCrypto } from "@/components/payment/CashToCrypto";
+import { CryptoToCash } from "@/components/payment/CryptoToCash";
+import { Fiat } from "@/components/payment/Fiat";
+import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Image from "next/image";
+} from "@/components/ui/card";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/tabs";
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white font-sans dark:bg-white text-black">
-      <Card className="bg-white border border-[#CCF6E5] min-w-[640px] min-h-[758px]">
-        <Tabs defaultValue={tabsLabel[0]?.value} className="w-[400px]">
-          <CardHeader>
-            <TabsList className="grid w-full grid-cols-2">
+    <div className="flex min-h-screen items-center justify-center bg-white font-sans text-black">
+      <Card className="bg-white border border-[#CCF6E5] min-w-[640px] min-h-[758px] rounded-[30px] flex flex-col">
+        <Tabs defaultValue={tabsLabel[0]?.value} className="w-full flex flex-col items-center gap-12">
+          <CardHeader className="w-full flex flex-col items-center">
+            <TabsList className="grid grid-cols-3 bg-[#F2F2F2] rounded-[30px] w-[392px]">
               {tabsLabel.map((item, index) => (
-                <TabsTrigger key={index} value={item.value}>
+                <TabsTrigger
+                  key={index}
+                  value={item.value}
+                  className="data-[state=active]:bg-[#013941] data-[state=active]:text-white rounded-[30px] text-[#828282]"
+                >
                   {item.name}
                 </TabsTrigger>
               ))}
             </TabsList>
           </CardHeader>
+          <CardContent className="w-full">
+            <TabsContent value="cryptoToCash">
+              <CryptoToCash />
+            </TabsContent>
+            <TabsContent value="cashToCrypto">
+              <CashToCrypto />
+            </TabsContent>
+            <TabsContent value="cryptoToFiat">
+              <Fiat />
+            </TabsContent>
+          </CardContent>
         </Tabs>
-
       </Card>
     </div>
   );
