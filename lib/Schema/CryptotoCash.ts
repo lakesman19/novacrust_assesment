@@ -16,3 +16,12 @@ export const cryptoToCashSchema = z.object({
 
 // TypeScript type inference from schema
 export type CryptoToCashFormData = z.infer<typeof cryptoToCashSchema>;
+
+
+export const bankDetailsSchema = z.object({
+  bankId: z.string().min(1),
+  accountNumber: z.string().length(10),
+  accountName: z.string().min(1),
+});
+
+export type BankDetailsData = z.infer<typeof bankDetailsSchema>;

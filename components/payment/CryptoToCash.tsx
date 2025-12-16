@@ -1,3 +1,6 @@
+
+
+
 "use client"
 
 import { cryptoAssets, paymentDestinations, wallets } from "../data";
@@ -19,7 +22,7 @@ import { Button } from "../ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,11 +34,20 @@ import {
     FormItem,
     FormMessage,
 } from "../ui/form";
+import { useViewStore } from "@/store/cryptoToCash";
+
+const cryptoPricesNGN: Record<string, number> = {
+    BTC: 30000000,
+    ETH: 1800000,
+    USDT: 800,
+    BNB: 100000,
+    LINK: 7000,
+};
 
 export const CryptoToCash = () => {
     const [openCrypto, setOpenCrypto] = useState(false);
     const [openFiat, setOpenFiat] = useState(false);
-
+    const { currentView, setView, nextView, prevView } = useViewStore()
     const form = useForm<CryptoToCashFormData>({
         resolver: zodResolver(cryptoToCashSchema),
         defaultValues: {
@@ -47,23 +59,31 @@ export const CryptoToCash = () => {
         },
     });
 
+    const payAmount = form.watch("payAmount");
+    const cryptoAssetValue = form.watch("cryptoAsset");
+
     const selectedCryptoAsset = cryptoAssets.find(
-        (asset) => asset.symbol === form.watch("cryptoAsset")
+        (asset) => asset.symbol === cryptoAssetValue
     );
+    const nairaValue = useMemo(() => {
+        const amount = parseFloat(payAmount || "0");
+        const price = cryptoPricesNGN[cryptoAssetValue] || 0;
+        return (amount * price).toLocaleString("en-NG", { style: "currency", currency: "NGN" });
+    }, [payAmount, cryptoAssetValue]);
 
     const onSubmit = (data: CryptoToCashFormData) => {
         console.log("Form submitted:", data);
-        // Handle form submission here
+        setView("bankDetails")
     };
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-4">
-                <div className="w-full flex flex-col gap-8">
+                <div className="w-full flex flex-col gap-6 sm:gap-8">
                     {/* You Pay Section */}
-                    <div className="w-full border border-[#E0E0E0] rounded-[30px] p-6">
+                    <div className="w-full border border-[#E0E0E0] rounded-[30px] p-4 sm:p-6">
                         <h3 className="text-sm text-[#828282] mb-4">You pay</h3>
-                        <div className="flex gap-3 items-center">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                             <FormField
                                 control={form.control}
                                 name="payAmount"
@@ -73,7 +93,7 @@ export const CryptoToCash = () => {
                                             <Input
                                                 type="number"
                                                 placeholder="0.00"
-                                                className="border-none text-2xl font-medium focus-visible:ring-0 focus-visible:ring-offset-0 p-0 shadow-none"
+                                                className="border-none text-xl sm:text-2xl font-medium focus-visible:ring-0 focus-visible:ring-offset-0 p-0 shadow-none"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -93,7 +113,7 @@ export const CryptoToCash = () => {
                                                         variant="outline"
                                                         role="combobox"
                                                         aria-expanded={openCrypto}
-                                                        className="justify-between border-none bg-[#F2F2F2] rounded-[20px] focus:ring-0 focus:ring-offset-0 hover:bg-[#F2F2F2]"
+                                                        className="w-full sm:w-auto justify-between border-none bg-[#F2F2F2] rounded-[20px] focus:ring-0 focus:ring-offset-0 hover:bg-[#F2F2F2]"
                                                     >
                                                         {selectedCryptoAsset ? (
                                                             <div className="flex items-center gap-2">
@@ -166,14 +186,15 @@ export const CryptoToCash = () => {
                     </div>
 
                     {/* You Receive Section */}
-                    <div className="w-full border border-[#E0E0E0] rounded-[30px] p-6">
+                    <div className="w-full border border-[#E0E0E0] rounded-[30px] p-4 sm:p-6">
                         <h3 className="text-sm text-[#828282] mb-4">You receive</h3>
-                        <div className="flex gap-3 items-center">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                             <Input
-                                type="number"
+                                type="text"
                                 placeholder="0.00"
                                 readOnly
-                                className="flex-1 border-none text-2xl font-medium focus-visible:ring-0 focus-visible:ring-offset-0 p-0 bg-transparent shadow-none"
+                                value={nairaValue}
+                                className="flex-1 border-none text-xl sm:text-2xl font-medium focus-visible:ring-0 focus-visible:ring-offset-0 p-0 bg-transparent shadow-none"
                             />
                             <FormField
                                 control={form.control}
@@ -186,8 +207,9 @@ export const CryptoToCash = () => {
                                                     <Button
                                                         variant="outline"
                                                         role="combobox"
+                                                        disabled
                                                         aria-expanded={openFiat}
-                                                        className="justify-between border-none bg-[#F2F2F2] rounded-[20px] focus:ring-0 focus:ring-offset-0 hover:bg-[#F2F2F2]"
+                                                        className="w-full sm:w-auto justify-between border-none bg-[#F2F2F2] rounded-[20px] focus:ring-0 focus:ring-offset-0 hover:bg-[#F2F2F2]"
                                                     >
                                                         <div className="flex items-center gap-2">
                                                             <Image

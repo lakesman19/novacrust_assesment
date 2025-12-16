@@ -114,3 +114,37 @@ export const paymentDestinations: PaymentDestination[] = [
   },
 
 ];
+
+
+
+type Bank = {
+id: number
+name: string
+}
+
+export const nigerianBanks: Bank[] = [
+{ id: 1, name: "Access Bank" },
+{ id: 2, name: "Citibank Nigeria" },
+{ id: 3, name: "Ecobank Nigeria" },
+{ id: 4, name: "Fidelity Bank" },
+{ id: 5, name: "First Bank of Nigeria" },
+{ id: 6, name: "First City Monument Bank" },
+{ id: 7, name: "Globus Bank" },
+{ id: 8, name: "Guaranty Trust Bank" },
+{ id: 9, name: "Heritage Bank" },
+{ id: 10, name: "Jaiz Bank" },
+{ id: 11, name: "Keystone Bank" },
+{ id: 12, name: "Lotus Bank" },
+{ id: 13, name: "Polaris Bank" },
+{ id: 14, name: "Providus Bank" },
+{ id: 15, name: "Stanbic IBTC Bank" },
+{ id: 16, name: "Standard Chartered Bank Nigeria" },
+{ id: 17, name: "Sterling Bank" },
+{ id: 18, name: "SunTrust Bank" },
+{ id: 19, name: "Titan Trust Bank" },
+{ id: 20, name: "Union Bank of Nigeria" },
+{ id: 21, name: "United Bank for Africa" },
+{ id: 22, name: "Unity Bank" },
+{ id: 23, name: "Wema Bank" },
+{ id: 24, name: "Zenith Bank" }
+]
